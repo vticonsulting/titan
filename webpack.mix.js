@@ -42,12 +42,6 @@ mix.options({
     tailwindcss(),
     calc({ precision: 10 }),
     autoprefixer({
-      browsers: [
-        'last 2 versions',
-        'not IE < 11',
-        'not IE_mob <= 11',
-        'not BB <= 10'
-      ],
       grid: false
     })
   ]
