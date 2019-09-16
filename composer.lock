@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "92d2e07e902f9bf83468192f1b2ba882",
+    "content-hash": "7b577f97b367ff6226b53ec5a09253de",
     "packages": [
         {
             "name": "badges/poser",
@@ -929,6 +929,43 @@
             ],
             "description": "A PHP class that makes working with images as simple as possible.",
             "time": "2017-09-12T09:03:56+00:00"
+        },
+        {
+            "name": "distantnative/retour-for-kirby",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/distantnative/retour-for-kirby.git",
+                "reference": "4c97ec0c9bd8856ea17629df99fde6edb76cf79b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/distantnative/retour-for-kirby/zipball/4c97ec0c9bd8856ea17629df99fde6edb76cf79b",
+                "reference": "4c97ec0c9bd8856ea17629df99fde6edb76cf79b",
+                "shasum": ""
+            },
+            "require": {
+                "getkirby/composer-installer": "^1.1"
+            },
+            "require-dev": {
+                "getkirby/cms": "^3.2.0"
+            },
+            "type": "kirby-plugin",
+            "extra": {
+                "kirby-cms-path": false
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nico Hoffmann",
+                    "email": "on-github@nhoffmann.com"
+                }
+            ],
+            "description": "Advanced redirection management and error tracking for Kirby 3",
+            "time": "2019-08-06T09:48:39+00:00"
         },
         {
             "name": "diverently/laravel-mix-kirby",

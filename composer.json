@@ -49,7 +49,8 @@
     "texnixe/related": "^1.0",
     "texnixe/similar": "^0.9.0",
     "thestreamable/kirby-clear-cloudflare-cache": "^1.0",
-    "timoetting/kirby-builder": "^2.0"
+    "timoetting/kirby-builder": "^2.0",
+    "distantnative/retour-for-kirby": "^2.0"
   },
   "config": {
     "optimize-autoloader": true
