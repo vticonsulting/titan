@@ -1,5 +1,7 @@
 <?php
+
 namespace Plugin\Podcaster;
+
 use \Kirby\Toolkit\Xml;
 
 $rssUtils = new PodcasterUtils();
@@ -59,20 +61,20 @@ $rssUtils->setFeed($page);
 
 		<?php if ($user = $page->podcasterAuthor()->toUser()) : ?>
 			<googleplay:author><?php echo Xml::encode($user->name()); ?></googleplay:author>
+			<googleplay:email><?php echo Xml::encode($user->email()); ?></googleplay:email>
 		<?php endif ?>
-		<googleplay:email><?php echo Xml::encode($user->email()); ?></googleplay:email>
 		<?php $rssUtils->printFieldValue('rssFeed', 'googleplay:description', 'podcasterDescription'); ?>
 		<?php $rssUtils->printBoolValue('rssFeed', 'googleplay:explicit', 'podcasterExplicit'); ?>
 		<?php $rssUtils->printBoolValue('rssFeed', 'googleplay:block', 'podcasterBlock'); ?>
 
-	<?php foreach($rssUtils->getEpisodes() as $episode) : ?>
+	<?php foreach ($rssUtils->getEpisodes() as $episode) : ?>
 		<?php $rssUtils->setCurrentEpisode($episode); ?>
 		<item>
 			<title><?php echo Xml::encode($episode->podcasterTitle()->or($episode->title())); ?></title>
 			<link><?php echo $episode->url(); ?></link>
 			<atom:link href="<?php echo $episode->url(); ?>"/>
 
-			<?php if($episode->podcasterCover()->isNotEmpty()) : ?>
+			<?php if ($episode->podcasterCover()->isNotEmpty()) : ?>
 			<image href="<?php echo $episode->podcasterCover()->toFile()->url(); ?>" />
 			<itunes:image href="<?php echo $episode->podcasterCover()->toFile()->url(); ?>" />
 			<googleplay:image href="<?php echo $episode->podcasterCover()->toFile()->url(); ?>" />
@@ -87,6 +89,7 @@ $rssUtils->setFeed($page);
 			<?php $rssUtils->printFieldValue('episode', 'itunes:summary', 'podcasterDescription'); ?>
 			<itunes:duration><?php echo $rssUtils->getAudioDuration($episode); ?></itunes:duration>
 			<?php $rssUtils->printFieldValue('episode', 'itunes:season', 'podcasterSeason'); ?>
+			<?php $rssUtils->printFieldValue('episode', 'itunes:episode', 'podcasterEpisode'); ?>
 			<?php $rssUtils->printBoolValue('episode', 'itunes:explicit', 'podcasterExplizit'); ?>
 			<?php $rssUtils->printBoolValue('episode', 'itunes:block', 'podcasterBlock'); ?>
 

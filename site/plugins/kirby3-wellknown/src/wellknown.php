@@ -5,24 +5,29 @@ namespace omz13;
 use Kirby;
 use Kirby\Toolkit\A;
 
+use const CASE_LOWER;
 use const INPUT_SERVER;
+use const PHP_EOL;
 use const WK_CONFIGURATION_PREFIX;
 use const WK_VERSION;
 
+use function array_change_key_case;
 use function array_key_exists;
 use function class_exists;
+use function count;
 use function define;
 use function filter_input;
 use function header;
 use function in_array;
 use function is_array;
+use function is_string;
 use function kirby;
 use function str_replace;
 use function strlen;
 use function strtolower;
 use function substr;
 
-define( 'WK_VERSION', '0.2.0' );
+define( 'WK_VERSION', '0.2.1' );
 define( 'WK_CONFIGURATION_PREFIX', 'omz13.wellknown' );
 
 class K3WellKnown
@@ -36,14 +41,23 @@ class K3WellKnown
   private static function getConfigurationForKey( string $key ) : string {
     // Try to pick up configuration when provided in an array (vendor.plugin.array(key=>value))
     $o = kirby()->option( WK_CONFIGURATION_PREFIX );
-    if ( $o != null && is_array( $o ) && array_key_exists( $key, $o ) ) {
-      return $o[$key];
+    if ( $o != null && is_array( $o ) ) {
+      $oLC = array_change_key_case( $o, CASE_LOWER );
+      if ( array_key_exists( strtolower( $key ) , $oLC ) ) {
+        return $oLC[ strtolower( $key ) ];
+      }
     }
 
     // try to pick up configuration as a discrete (vendor.plugin.key=>value)
     $o = kirby()->option( WK_CONFIGURATION_PREFIX . '.' . $key );
     if ( $o != null ) {
-      return $o;
+      if ( is_string( $o ) ) {
+        return $o;
+      }
+      // array'd string? i.e. [ 'string' ] instead of 'string'
+      if ( is_array( $o ) && count( $o ) == 1 && is_string( $o[0] ) ) {
+          return $o[0];
+      }
     }
 
     // this should not be reached... because plugin should define defaults for all its options...
@@ -52,6 +66,7 @@ class K3WellKnown
 
   /**
    * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+   * @SuppressWarnings(PHPMD.NPathComplexity)
    */
   private static function getRobots() : string {
     $r  = '# Any use of this file - robots.txt -  or failure' . "\n";
@@ -105,7 +120,14 @@ class K3WellKnown
       $r .= '# Sitemap not provided' . "\n";
     }//end if
 
-    $x = kirby()->site()->content()->get( 'wkRobots' );
+    $x = static::getConfigurationForKey( 'the-robots' );
+    if ( $x == null || $x == "" ) {
+      $x = kirby()->site()->content()->get( 'wkRobots' );
+    } else {
+      // expand \n, etc .
+      $x = str_replace( '\n', PHP_EOL, $x );
+    }
+
     if ( $x != null && $x != "" ) {
       return $r . "\n" . $x . "\n";
     }
@@ -165,7 +187,7 @@ class K3WellKnown
 
     $r = static::getConfigurationForKey( 'the-' . str_replace( '-', '', $whatever ) );
     if ( $r != null && $r != "" ) {
-      return new Kirby\Cms\Response( $r, 'text/plain', 200, [ "x-omz13-wk" => "from-c" ] );
+      return new Kirby\Cms\Response( str_replace( '\n', PHP_EOL, $r ), 'text/plain', 200, [ "x-omz13-wk" => "from-c" ] );
     }
 
     $wants = 'wellknown' . strtolower( str_replace( '-', '', $whatever ) );

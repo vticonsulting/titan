@@ -93,7 +93,7 @@ The non-binding list of planned features and implementation notes are:
 
 Pick one of the following per your epistemological model:
 
-- `composer require --no-dev omz13/kirby3-feeds`; the plugin will automagically appear in `site/plugins`.
+- `composer require omz13/kirby3-feeds`; the plugin will automagically appear in `site/plugins`.
 - Download a zip of the latest release - [master.zip](https://github.com/omz13/kirby3-feeds/archive/master.zip) - and copy the contents to your `site/plugins/kirby3-feeds`.
 - `git submodule add https://github.com/omz13/kirby3-feeds.git site/plugins/kirby3-feeds`.
 
@@ -146,9 +146,13 @@ This plugin provides two snippets to dynamically generate the necessary meta dat
 - `feeds-header` - to provide the links for all feeds (firehose and category-based)
 - `firehose-feeds-header` - to provide the links for the firehose feed only.
 
+Or for those who prefer to use pageMethods, the equivalent to the above are:
+- `headFeeds`
+- `headFirehoseFeeds`
+
 Example:
 
-In `site/snippets/header.php` - or whatever generates your `<head>` data - simply add `<?php snippet('feeds-header') ?>` in the best applicable place.
+In `site/snippets/header.php` - or whatever generates your `<head>` data - simply add `<?php snippet('feeds-header') ?>` or `<?= $page->headFeeds() ?>` in the best applicable place.
 
 If the plugin is disabled, these snippets will not generate the appropriate feed-discovery links.
 
@@ -183,7 +187,7 @@ For example, for the [Kirby Starter Kit](https://github.com/k-next/starterkit), 
 
 return [
   'omz13.feeds.cacheTTL' => 60,
-  'omz13.feeds.firehose' => [ 'articles' ],
+  'omz13.feeds.firehose' => 'articles',
   ],
 ];
 ```
@@ -196,7 +200,7 @@ _For experimental purposes this plugin implements a single-level pseudo-namespac
 return [
   'omz13.feeds' => [
     'cacheTTL' => 60,
-    'firehose' => [ 'articles' ],
+    'firehose' => 'articles',
   ],
 ];
 ```

@@ -10,11 +10,25 @@ export default {
     progress: String,
     job: String,
     cooldown: Number,
-    status: String
+    status: String,
+    data: String,
+    pageURI: String,
+    user: Object,
   },
   methods: {
     janitor() {
-      this.getRequest(this.job)
+      let url = this.job
+      if(true) {
+        url = url + '/' + encodeURIComponent(this.pageURI)
+      }
+      if(this.data != undefined) {
+        let data = this.data
+        if (data === '{{ user.email }}') {
+          data = this.user.email
+        }
+        url = url + '/' + encodeURIComponent(data)
+      }
+      this.getRequest(url)
     },
     getRequest (url) {
       let that = this
@@ -23,7 +37,6 @@ export default {
       this.status = 'doing-job'
       this.$api.get(url)
         .then(response => {
-            // console.log(response)
             if(response.label !== undefined) {
               that.label = response.label
             }
@@ -36,6 +49,9 @@ export default {
               that.label = oldlabel
               that.status = ''
             }, that.cooldown)
+            if(response.reload !== undefined && response.reload === true) {
+              location.reload()
+            }
         })
     }
   }

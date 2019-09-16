@@ -5,17 +5,28 @@
 
 namespace omz13;
 
+use Closure;
+use Exception;
+use Kirby\Cms\Language;
 use Kirby\Cms\Page;
 use Kirby\Cms\Pages;
 use Kirby\Cms\System;
 use Kirby\Exception\LogicException;
 
+use const CASE_LOWER;
 use const DATE_ATOM;
+use const LC_ALL;
+use const LC_COLLATE;
+use const LC_CTYPE;
+use const LC_MESSAGES;
+use const PHP_EOL;
 use const XMLSITEMAP_CONFIGURATION_PREFIX;
 use const XMLSITEMAP_VERSION;
 
+use function array_change_key_case;
 use function array_key_exists;
 use function array_push;
+use function array_values;
 use function assert;
 use function date;
 use function define;
@@ -23,6 +34,7 @@ use function file_exists;
 use function file_get_contents;
 use function filectime;
 use function filemtime;
+use function get_class;
 use function in_array;
 use function is_array;
 use function is_string;
@@ -31,6 +43,7 @@ use function kirby;
 use function max;
 use function md5;
 use function microtime;
+use function phpversion;
 use function str_replace;
 use function strrpos;
 use function strtolower;
@@ -38,7 +51,7 @@ use function strtotime;
 use function substr;
 use function time;
 
-define( 'XMLSITEMAP_VERSION', '1.1.6' );
+define( 'XMLSITEMAP_VERSION', '1.2.1' );
 define( 'XMLSITEMAP_CONFIGURATION_PREFIX', 'omz13.xmlsitemap' );
 
 /**
@@ -54,6 +67,7 @@ class XMLSitemap
   private static $optionXCWTI; // exclude children when template is
   private static $optionXPWTI; // exclude page when template is
   private static $optionXPWSI; // exclude page when slug is
+  private static $optionNOTRA; // hide untranslated
   private static $optionShimH;
   public static $version = XMLSITEMAP_VERSION;
 
@@ -76,8 +90,11 @@ class XMLSitemap
   public static function getArrayConfigurationForKey( string $key ) : ?array {
     // Try to pick up configuration when provided in an array (vendor.plugin.array(key=>value))
     $o = kirby()->option( XMLSITEMAP_CONFIGURATION_PREFIX );
-    if ( $o != null && is_array( $o ) && array_key_exists( $key, $o ) ) {
-      return $o[$key];
+    if ( $o != null && is_array( $o ) ) {
+      $oLC = array_change_key_case( $o, CASE_LOWER );
+      if ( array_key_exists( strtolower( $key ) , $oLC ) ) {
+        return $oLC[ strtolower( $key ) ];
+      }
     }
 
     // try to pick up configuration as a discrete (vendor.plugin.key=>value)
@@ -99,8 +116,11 @@ class XMLSitemap
   public static function getConfigurationForKey( string $key ) : string {
     // Try to pick up configuration when provided in an array (vendor.plugin.array(key=>value))
     $o = kirby()->option( XMLSITEMAP_CONFIGURATION_PREFIX );
-    if ( $o != null && is_array( $o ) && array_key_exists( $key, $o ) ) {
-      return $o[$key];
+    if ( $o != null && is_array( $o ) ) {
+      $oLC = array_change_key_case( $o, CASE_LOWER );
+      if ( array_key_exists( strtolower( $key ) , $oLC ) ) {
+        return $oLC[ strtolower( $key ) ];
+      }
     }
 
     // try to pick up configuration as a discrete (vendor.plugin.key=>value)
@@ -112,6 +132,24 @@ class XMLSitemap
     // this should not be reached... because plugin should define defaults for all its options...
     return "";
   }//end getConfigurationForKey()
+
+  public static function getClosureForKey( string $key ) : ?Closure {
+    // Try to pick up configuration when provided in an array (vendor.plugin.array(key=>Closure))
+    $o = kirby()->option( XMLSITEMAP_CONFIGURATION_PREFIX );
+    if ( $o != null && is_array( $o ) ) {
+      $oLC = array_change_key_case( $o, CASE_LOWER );
+      if ( array_key_exists( strtolower( $key ) , $oLC ) ) {
+        return $oLC[ strtolower( $key ) ];
+      }
+    }
+
+    // try to pick up configuration as a discrete (vendor.plugin.key=>Closure)
+    $o = kirby()->option( XMLSITEMAP_CONFIGURATION_PREFIX . '.' . $key );
+    if ( $o != null ) {
+      return $o;
+    }
+    return null;
+  }//end getClosureForKey()
 
   public static function getStylesheet() : string {
     $f = null;
@@ -137,6 +175,7 @@ class XMLSitemap
     static::$optionXCWTI = static::getArrayConfigurationForKey( 'excludeChildrenWhenTemplateIs' );
     static::$optionXPWTI = static::getArrayConfigurationForKey( 'excludePageWhenTemplateIs' );
     static::$optionXPWSI = static::getArrayConfigurationForKey( 'excludePageWhenSlugIs' );
+    static::$optionNOTRA = static::getConfigurationForKey( 'hideuntranslated' );
     static::$optionShimH = static::getConfigurationForKey( 'x-shimHomepage' );
   }//end pickupOptions()
 
@@ -172,6 +211,7 @@ class XMLSitemap
       $ops .= '-' . json_encode( static::$optionXCWTI );
       $ops .= '-' . json_encode( static::$optionXPWSI );
       $ops .= '-' . json_encode( static::$optionXPWTI );
+      $ops .= '-' . json_encode( static::$optionNOTRA );
       $ops .= '-' . json_encode( static::$optionShimH );
       $ops .= '-' . json_encode( $debug );
 
@@ -206,6 +246,7 @@ class XMLSitemap
   /**
    * @SuppressWarnings(PHPMD.CyclomaticComplexity)
    * @SuppressWarnings(PHPMD.NPathComplexity)
+   * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
    */
   private static function generateSitemap( Pages $p, bool $debug = false ) : string {
     static::pickupOptions();
@@ -228,11 +269,13 @@ class XMLSitemap
 
     if ( $debug == true ) {
       $r .= '<!--                 disableImages = ' . json_encode( static::$optionNOIMG ) . " -->\n";
+      $r .= '<!--              hideuntranslated = ' . json_encode( static::$optionNOTRA ) . " -->\n";
       $r .= '<!--     includeUnlistedWhenSlugIs = ' . json_encode( static::$optionIUWSI ) . " -->\n";
       $r .= '<!-- includeUnlistedWhenTemplateIs = ' . json_encode( static::$optionIUWTI ) . " -->\n";
       $r .= '<!-- excludeChildrenWhenTemplateIs = ' . json_encode( static::$optionXCWTI ) . " -->\n";
       $r .= '<!--     excludePageWhenTemplateIs = ' . json_encode( static::$optionXPWTI ) . " -->\n";
       $r .= '<!--         excludePageWhenSlugIs = ' . json_encode( static::$optionXPWSI ) . " -->\n";
+      $r .= '<!--                      addPages = ' . ( static::getClosureForKey( 'addpages' ) != null ? "Closure" : "null" ) . " -->\n";
       $r .= '<!--                x-shimHomepage = ' . json_encode( static::$optionShimH ) . " -->\n";
     }
 
@@ -245,7 +288,7 @@ class XMLSitemap
       static::addComment( $r, 'Processing as ML; number of languages = ' . kirby()->languages()->count() );
       assert( kirby()->languages()->count() > 0 );
       foreach ( kirby()->languages() as $lang ) {
-        static::addComment( $r, 'ML code=' . $lang->code() . ' locale=' . $lang->locale() . ' name=' . $lang->name() );
+        static::addComment( $r, 'ML code=' . $lang->code() . ' locale=' . static::localeFromLang( $lang ) . ' name=' . $lang->name() );
       }
 
       if ( static::$optionShimH == true ) {
@@ -258,7 +301,7 @@ class XMLSitemap
         $r .= '  <loc>' . kirby()->url( 'index' ) . '</loc>' . "\n";
         $r .= '  <xhtml:link rel="alternate" hreflang="x-default" href="' . $homepage->urlForLanguage( kirby()->language()->code() ) . '" />' . "\n";
         foreach ( kirby()->languages() as $lang ) {
-          $r .= '  <xhtml:link rel="alternate" hreflang="' . static::getHreflangFromLocale( $lang->locale() ) . '" href="' . $homepage->urlForLanguage( $lang->code() ) . '" />' . "\n";
+          $r .= '  <xhtml:link rel="alternate" hreflang="' . static::getHreflangFromLocale( static::localeFromLang( $lang ) ) . '" href="' . $homepage->urlForLanguage( $lang->code() ) . '" />' . "\n";
         }
         $r .= '</url>' . "\n";
       }
@@ -276,12 +319,15 @@ class XMLSitemap
       static::addComment( $r, "ML loop count is " . kirby()->languages()->count() );
       // Generate default language
       static::addComment( $r, 'ML loop #0 ' . kirby()->languages()->default()->code() . ' default' );
+
+      static::addPagesToSitemapFromClosure( $r, '--' );
       static::addPagesToSitemap( $p, $r, '--' );
       // Then generate all other languages
       $j = 0;
       foreach ( $lolc as $langcode ) {
         if ( $langcode !== kirby()->language()->code() ) {
           static::addComment( $r, 'ML loop #' . ++$j . ' add secondary ' . $langcode );
+          static::addPagesToSitemapFromClosure( $r, $langcode );
           static::addPagesToSitemap( $p, $r, $langcode );
         } else {
           static::addComment( $r, 'ML loop #' . ++$j . ' skip default ' . $langcode );
@@ -289,6 +335,7 @@ class XMLSitemap
       }
     } else {
       static::addComment( $r, 'Processing as SL' );
+      static::addPagesToSitemapFromClosure( $r, null );
       static::addPagesToSitemap( $p, $r, null );
     }//end if
 
@@ -299,13 +346,34 @@ class XMLSitemap
     if ( $debug == true ) {
       $elapsed = ( $tend - $tbeg );
 
-      $r .= '<!-- v' . static::$version . " -->\n";
-      $r .= '<!-- Generation took ' . ( 1000 * $elapsed ) . " microseconds -->\n";
-      $r .= '<!-- Generated at ' . date( DATE_ATOM, (int) $tend ) . " -->\n";
+      $r .= '<!-- v' . static::$version . ' on ' . phpversion() . '  -->' . PHP_EOL;
+      $r .= '<!-- Generation took ' . ( 1000 * $elapsed ) . ' microseconds -->' . PHP_EOL;
+      $r .= '<!-- Generated at ' . date( DATE_ATOM, (int) $tend ) . ' -->' . PHP_EOL;
     }
 
     return $r;
   }//end generateSitemap()
+
+  private static function addPagesToSitemapFromClosure( string &$r, ?string $langcode = null ) : void {
+    $f = static::getClosureForKey( 'addPages' );
+    if ( $f == null ) {
+      static::addComment( $r, 'addPages is null' );
+      return;
+    }
+
+    $c = $f( $langcode );
+    if ( $c == null ) {
+      static::addComment( $r, 'addPages gives null' );
+    } else {
+      if ( get_class( $c ) == 'Kirby\Cms\Pages' ) {
+        static::addComment( $r, 'BEG addPages' );
+        static::addPagesToSitemap( $c, $r, $langcode );
+        static::addComment( $r, 'END addPages' );
+      } else {
+        throw new Exception( 'Configuration oops. XMLSITEMAP addPages returned ' . get_class( $c ) , 1 );
+      }
+    }
+  }//end addPagesToSitemapFromClosure()
 
   /**
   * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -313,8 +381,7 @@ class XMLSitemap
   * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
    */
   private static function addPagesToSitemap( Pages $pages, string &$r, ?string $langcode = null ) : void {
-    $sortedpages = $pages->sortBy( 'url', 'asc' );
-    foreach ( $sortedpages as $p ) {
+    foreach ( $pages as $p ) {
       static::addComment( $r, 'crunching ' . $p->parent() . '/' . $p->uid() . ' [it=' . $p->intendedTemplate() . '] [s=' . $p->status() . '] [d=' . $p->depth() . ']' . ( $p->isHomePage() ? " HOMEPAGE" : "" ) );
 
       if ( $langcode == null ) {
@@ -324,8 +391,14 @@ class XMLSitemap
           static::addComment( $r, '(--) "' . $p->title() . '"' );
         } else {
           static::addComment( $r, '(' . $langcode . ') "' . $p->content( $langcode )-> title() . '"' );
+
+          // skip becaue no translation available
+          if ( static::$optionNOTRA == true && ! $p->translation( $langcode )->exists() ) {
+            static::addComment( $r, 'excluding because translation not available' );
+            continue;
+          }
         }
-      }
+      }//end if
 
       // don't include the error page
       if ( $p->isErrorPage() ) {
@@ -396,8 +469,12 @@ class XMLSitemap
         $r .= '  <xhtml:link rel="alternate" hreflang="x-default" href="' . $p->urlForLanguage( kirby()->language()->code() ) . '" />' . "\n";
         // localized languages: <xhtml:link rel="alternate" hreflang="en" href="http://www.example.com/"/>
         foreach ( kirby()->languages() as $l ) {
-          // Note: Contort PHP locale to hreflang-required form
-          $r .= '  <xhtml:link rel="alternate" hreflang="' . static::getHreflangFromLocale( $l->locale() ) . '" href="' . $p->urlForLanguage( $l->code() ) . '" />' . "\n";
+          if ( static::$optionNOTRA == true && ! $p->translation( $l->code() )->exists() ) {
+            $r .= '  <!-- no translation for     hreflang="' . $l->code() . '" -->' . "\n";
+          } else {
+            // Note: Contort PHP locale to hreflang-required form
+            $r .= '  <xhtml:link rel="alternate" hreflang="' . static::getHreflangFromLocale( static::localeFromLang( $l ) ) . '" href="' . $p->urlForLanguage( $l->code() ) . '" />' . "\n";
+          }
         }
       }//end if
 
@@ -473,18 +550,44 @@ class XMLSitemap
     return $lastmod;
   }//end getLastmod()
 
+  private static function localeFromLang( ?Language $lang = null ) : string {
+    if ( $lang == null ) {
+      $lang = kirby()->language();
+    }
+
+    $l = $lang->locale();
+
+    // kirby < 3.1.3 - locale is a string
+    if ( is_string( $l ) ) {
+      return $l;
+    }
+    if ( is_array( $l ) ) {
+      // array implies kirby >= 3.1.3 where can be array of LC_WHATEVER values.
+      foreach ( [ LC_ALL, LC_CTYPE, LC_COLLATE, LC_MESSAGES ] as $w ) {
+        $s = $lang->locale( $w );
+        if ( $s != null ) {
+          assert( is_string( $s ) ); // to stop stan complaining
+          return $s;
+        }
+      }
+      // Fallback: return first value in the array, and hope its good enough.
+      return array_values( $l )[ '0' ];
+    }
+    throw new Exception( "Getting locale from language borked " . json_encode( $lang->locale() ), 1 );
+  }//end localeFromLang()
+
   private static function getHreflangFromLocale( string $locale ) : string {
     // Normalize
     $locale = strtolower( $locale );
     // Clean (.whatever@whatever)
     $x = strrpos( $locale, '.', 0 );
     if ( $x != false ) {
-      $locale = substr( $locale, 0, -$x - 1 );
+      $locale = substr( $locale, 0, -$x );
     }
     // More clean (just in case @whatever)
     $y = strrpos( $locale, '@', 0 );
     if ( $y != false ) {
-      $locale = substr( $locale, 0, -$y - 1 );
+      $locale = substr( $locale, 0, -$y );
     }
     // Huzzah! $locale is now sanitized (which is not the same as canonicalization)
     // Ensure hyphens not underscores

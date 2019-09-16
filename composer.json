@@ -19,7 +19,6 @@
     "bnomei/kirby3-thumb-imageoptim": "^1.3",
     "bvdputte/kirby-log": "^1.0",
     "bvdputte/kirby-queue": "^1.0",
-    "distantnative/retour-for-kirby": "^1.0",
     "diverently/laravel-mix-kirby": "^1.1",
     "flokosiol/focus": "^3.0",
     "getkirby/cms": "^3.0",

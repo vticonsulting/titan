@@ -48,7 +48,7 @@ use function strtotime;
 use function time;
 use function ucwords;
 
-define( 'FEEDS_VERSION', '1.1.0' );
+define( 'FEEDS_VERSION', '1.2.0' );
 define( 'FEEDS_CONFIGURATION_PREFIX', 'omz13.feeds' );
 
 /**
@@ -177,11 +177,10 @@ class Feeds
     }//end if
 
     if ( kirby()->collections()->has( $category ) == false ) {
-      header( 'HTTP/1.0 500' );
       return new Response(
           'Oops. Syndication feed configuration error - collection \'' . $category . '\' not found but needed for ' . ( $firehose ? "firehose" : "category-based" ) . " feed." ,
           null,
-          404
+          500
       );
     }
 

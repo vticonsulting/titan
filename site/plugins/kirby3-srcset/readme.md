@@ -1,6 +1,7 @@
 # Kirby 3 Srcset
 
-![GitHub release](https://img.shields.io/github/release/bnomei/kirby3-srcset.svg?maxAge=1800) ![License](https://img.shields.io/github/license/mashape/apistatus.svg) ![Kirby Version](https://img.shields.io/badge/Kirby-3%2B-black.svg) ![Kirby 3 Pluginkit](https://img.shields.io/badge/Pluginkit-YES-cca000.svg)
+![GitHub release](https://img.shields.io/github/release/bnomei/kirby3-srcset.svg?maxAge=1800) ![License](https://img.shields.io/github/license/mashape/apistatus.svg) ![Kirby Version](https://img.shields.io/badge/Kirby-3-black.svg) ![Kirby 3 Pluginkit](https://img.shields.io/badge/Pluginkit-YES-cca000.svg) [![Build Status](https://travis-ci.com/bnomei/kirby3-srcset.svg?branch=master)](https://travis-ci.com/bnomei/kirby3-srcset) [![Coverage Status](https://coveralls.io/repos/github/bnomei/kirby3-srcset/badge.svg?branch=master)](https://coveralls.io/github/bnomei/kirby3-srcset?branch=master) [![Gitter](https://badges.gitter.im/bnomei-kirby-3-plugins/community.svg)](https://gitter.im/bnomei-kirby-3-plugins/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 
 Kirby 3 Plugin for creating image srcset using picture or image element
 
@@ -21,7 +22,7 @@ This plugin is free but if you use it in a commercial project please consider to
 
 - Why the picture element? Because having multiple `sources` with different mime types can improve pagespeed. For example: This is the only way to use `webp` and have a fallack to `jpg` for browsers that [do not support it](https://caniuse.com/#feat=webp).
 - You will need a Picture Polyfill for [IE11 support](https://caniuse.com/#search=picture). This plugin does not provide this.
-- Javascript library for lazy loading is not included since that should be part of the websites build chain.
+- Javascript library for **lazy loading is not included** since that should be part of the websites build chain.
 - A `sizes` attribute is not defined since js lib [lazysizes](https://github.com/aFarkas/lazysizes) can create these on-the-fly based on actual screen size of image. see `autosizes` setting.
 
 ## Setup
@@ -151,7 +152,7 @@ https://getkirby.com/docs/reference/text/kirbytags/image
 
 **lazy.prefix**
 - default: `data-`. This can be used to add [Flickity Lazyloading](https://flickity.metafizzy.co/options.html#lazyload).
-- example: `$page->image('ukulele.jpg')->srcset('breakpoints', true, 'data-flickity-lazyload-');`
+- example: `$page->image('ukulele.jpg')->imgElementWithSrcset('breakpoints', true, 'data-flickity-lazyload-');`
 
 > TIP: You might need to add CSS as well.
 ```css

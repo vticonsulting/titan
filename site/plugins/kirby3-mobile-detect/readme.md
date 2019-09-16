@@ -1,6 +1,15 @@
 # Kirby 3 Mobile Detect
 
-![GitHub release](https://img.shields.io/github/release/bnomei/kirby3-mobile-detect.svg?maxAge=1800) ![License](https://img.shields.io/github/license/mashape/apistatus.svg) ![Kirby Version](https://img.shields.io/badge/Kirby-3%2B-black.svg) ![Kirby 3 Pluginkit](https://img.shields.io/badge/Pluginkit-YES-cca000.svg)
+![Release](https://flat.badgen.net/packagist/v/bnomei/kirby3-mobile-detect?color=ae81ff)
+![Stars](https://flat.badgen.net/packagist/ghs/bnomei/kirby3-mobile-detect?color=272822)
+![Downloads](https://flat.badgen.net/packagist/dt/bnomei/kirby3-mobile-detect?color=272822)
+![Issues](https://flat.badgen.net/packagist/ghi/bnomei/kirby3-mobile-detect?color=e6db74)
+[![Build Status](https://flat.badgen.net/travis/bnomei/kirby3-mobile-detect)](https://travis-ci.com/bnomei/kirby3-mobile-detect)
+[![Coverage Status](https://flat.badgen.net/coveralls/c/github/bnomei/kirby3-mobile-detect)](https://coveralls.io/github/bnomei/kirby3-mobile-detect) 
+[![Demo](https://flat.badgen.net/badge/website/examples?color=f92672)](https://kirby3-plugins.bnomei.com/mobile-detect) 
+[![Gitter](https://flat.badgen.net/badge/gitter/chat?color=982ab3)](https://gitter.im/bnomei-kirby-3-plugins/community) 
+[![Twitter](https://flat.badgen.net/badge/twitter/bnomei?color=66d9ef)](https://twitter.com/bnomei)
+
 
 Static Class and Page Methods for using [Mobile Detect](https://github.com/serbanghita/).
 
@@ -17,7 +26,6 @@ This plugin is free but if you use it in a commercial project please consider to
 - `git submodule add https://github.com/bnomei/kirby3-mobile-detect.git site/plugins/kirby3-mobile-detect` or
 - `composer require bnomei/kirby3-mobile-detect`
 
-
 ```php
 $detect = $page->detect();
 // https://github.com/serbanghita/Mobile-Detect/wiki/Code-examples
@@ -28,6 +36,12 @@ $isMobile = $page->isMobile();
 $isMobile = Bnomei\MobileDetect::instance()->isMobile();
 $isTablet = $page->isTablet();
 ```
+
+> TIP: With `Bnomei\MobileDetect::instance()` you have access to **all** [detections functions](https://github.com/serbanghita/Mobile-Detect/wiki/Code-examples).
+
+## Dependencies
+
+- [Mobile Detect](https://github.com/serbanghita/)
 
 ## Disclaimer
 

@@ -1,6 +1,7 @@
 {
     "name": "mauricerenck/podcaster",
-    "description": "A podcast plugin for Kirby 3",
+    "version": "1.2.3",
+    "description": "A Kirby Podcast Plugin",
     "type": "kirby-plugin",
     "license": "MIT",
     "authors": [
@@ -9,7 +10,6 @@
             "email": "hello@maurice-renck.de"
         }
     ],
-    "version": "1.0.3",
     "autoload": {
         "files": [
             "utils/PodcasterUtils.php",
@@ -18,14 +18,18 @@
             "utils/PodcasterStatsFile.php",
             "utils/PodcasterStatsMysql.php",
             "utils/PodcasterStatsPodTrac.php",
+            "utils/PodcasterWizard.php",
             "lib/PiwikTracker.php"
         ]
     },
     "require": {
         "getkirby/composer-installer": "^1.1",
-        "wapmorgan/mp3info": "^0.0.3"
+        "james-heinrich/getid3": "^1.9"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.2"
+    },
+    "config": {
+        "optimize-autoloader": true
     }
 }

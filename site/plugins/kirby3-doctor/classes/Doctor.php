@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bnomei;
 
-class Doctor
+final class Doctor
 {
     private static $cache = null;
     private static function cache(): \Kirby\Cache\Cache
     {
-        if (!static::$cache) {
-            static::$cache = kirby()->cache('bnomei.doctor');
+        if (! self::$cache) {
+            self::$cache = kirby()->cache('bnomei.doctor');
         }
-        return static::$cache;
+        return self::$cache;
     }
 
-    public static function readCheckDefaults()
+    public static function readCheckDefaults($file = null): ?array
     {
-        $file = realpath(__DIR__.'/../doctor-checks-defaults.json');
+        $file = $file ?? realpath(__DIR__ . '/../doctor-checks-defaults.json');
         if (file_exists($file)) {
             return json_decode(file_get_contents($file), true);
         } else {
@@ -25,16 +27,23 @@ class Doctor
 
     private static function checksList(): array
     {
-        $defaults = static::readCheckDefaults();
+        $defaults = self::readCheckDefaults();
         if (function_exists('option')) {
             $checks = option('bnomei.doctor.checks');
             if (is_array($defaults) && is_array($checks)) {
                 $defaults = array_merge($defaults, $checks);
             }
         }
+        if (function_exists('kirby')) {
+            $pluginChecks = [];
+            foreach (kirby()->plugins() as $plugin) {
+                $pluginChecks = array_merge($pluginChecks, $plugin->extends()['bnomei.doctor.checks'] ?? []);
+            }
+            $defaults = array_merge($defaults, $pluginChecks);
+        }
         $validChecks = [];
         foreach ($defaults as $classname => $enabled) {
-            if (!$enabled) {
+            if (! $enabled) {
                 continue;
             }
             if (class_exists($classname)) {
@@ -74,7 +83,7 @@ class Doctor
                 kirby()->roots()->templates(),
             ]);
             $runner->addCheck($checkReadable);
-            
+
             $checkWriteable = new \ZendDiagnostics\Check\DirWritable([
                 kirby()->roots()->accounts(),
                 kirby()->roots()->cache(),
@@ -85,7 +94,7 @@ class Doctor
             $runner->addCheck($checkWriteable);
         }
 
-        foreach (static::checksList() as $checkClass) {
+        foreach (self::checksList() as $checkClass) {
             $runner->addCheck(new $checkClass());
         }
         return $runner;
@@ -93,7 +102,7 @@ class Doctor
 
     public static function cli(): int
     {
-        $runner = static::runner();
+        $runner = self::runner();
         $runner->addReporter(new \ZendDiagnostics\Runner\Reporter\BasicConsole(80, true));
         $results = $runner->run();
         return ($results->getFailureCount() + $results->getWarningCount()) > 0 ? 1 : 0;
@@ -105,39 +114,42 @@ class Doctor
         $expire = intval(option('bnomei.doctor.expire'));
         $id = sha1(site()->url());
 
-        $checkResult = static::cache()->get($id);
-        if ($forceDebug || !$checkResult) {
-            $runner = static::runner();
-            $runner->addReporter(new \Bnomei\DoctorReporter());
-            $results = $runner->run();
-            $c = [];
-            foreach ($results as $r) {
-                $r = $results[$r];
-                $rtype = 'Success';
-                if ($r instanceof \ZendDiagnostics\Result\SkipInterface) {
-                    $rtype = 'Skip';
-                } elseif ($r instanceof \ZendDiagnostics\Result\WarningInterface) {
-                    $rtype = 'Warning';
-                } elseif ($r instanceof \ZendDiagnostics\Result\FailureInterface) {
-                    $rtype = 'Failure';
-                }
-                $c[] = [
-                    'message' => $r->getMessage(),
-                    'result' => $rtype,
-                ];
-            }
-            // $c = \Kirby\Toolkit\A::sort($c, 'result');
-            static::cache()->set($id, $c, $expire);
+        $checkResult = self::cache()->get($id);
+
+        if (! $forceDebug && $checkResult) {
+            return $checkResult;
         }
 
-        return $checkResult;
+        $runner = self::runner();
+        $runner->addReporter(new \Bnomei\DoctorReporter());
+        $results = $runner->run();
+        $checks = [];
+        foreach ($results as $result) {
+            $result = $results[$result];
+            $rtype = 'Success';
+            if ($result instanceof \ZendDiagnostics\Result\SkipInterface) {
+                $rtype = 'Skip';
+            } elseif ($result instanceof \ZendDiagnostics\Result\WarningInterface) {
+                $rtype = 'Warning';
+            } elseif ($result instanceof \ZendDiagnostics\Result\FailureInterface) {
+                $rtype = 'Failure';
+            }
+            $checks[] = [
+                'message' => $result->getMessage(),
+                'result' => $rtype,
+            ];
+        }
+        // $checks = \Kirby\Toolkit\A::sort($checks, 'result');
+        self::cache()->set($id, $checks, $expire);
+
+        return $checks;
     }
 
-    public static function log(string $msg = '', string $level = 'info', array $context = []):bool
+    public static function log(string $msg = '', string $level = 'info', array $context = []): bool
     {
         $log = option('bnomei.doctor.log');
         if ($log && is_callable($log)) {
-            if (!option('debug') && $level == 'debug') {
+            if (! option('debug') && $level === 'debug') {
                 // skip but...
                 return true;
             } else {
@@ -150,12 +162,12 @@ class Doctor
     public static function findComposerLockFile(): ?string
     {
         foreach ([
-            kirby()->roots()->index().'/composer.lock', // plainkit
-            realpath(kirby()->roots()->index().'/../composer.lock'), // devkit
-            realpath(kirby()->roots()->index().option('bnomei.doctor.checkcomposerlocksecurity.path', ''))
-        ] as $p) {
-            if (\Kirby\Toolkit\F::exists($p)) {
-                return $p;
+            kirby()->roots()->index() . '/composer.lock', // plainkit
+            realpath(kirby()->roots()->index() . '/../composer.lock'), // devkit
+            realpath(kirby()->roots()->index() . option('bnomei.doctor.checkcomposerlocksecurity.path', '')),
+        ] as $path) {
+            if (\Kirby\Toolkit\F::exists($path)) {
+                return $path;
             }
         }
         return null;

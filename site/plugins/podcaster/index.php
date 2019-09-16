@@ -1,9 +1,13 @@
 <?php
+
 namespace Plugin\Podcaster;
+
 use Kirby;
 use Kirby\Exception\Exception;
 use \PiwikTracker;
 use Kirby\Http\Response;
+
+@include_once __DIR__ . '/vendor/autoload.php';
 
 load([
     'Plugin\Podcaster\PodcasterUtils' => 'utils/PodcasterUtils.php',
@@ -12,32 +16,53 @@ load([
     'Plugin\Podcaster\PodcasterStatsMySql' => 'utils/PodcasterStatsMysql.php',
     'Plugin\Podcaster\PodcasterStatsFile' => 'utils/PodcasterStatsFile.php',
     'Plugin\Podcaster\PodcasterStatsPodTrac' => 'utils/PodcasterStatsPodTrac.php',
+    'Plugin\Podcaster\PodcasterWizard' => 'utils/PodcasterWizard.php',
     'Plugin\Podcaster\PiwikTracker' => 'lib/PiwikTracker.php'
 ], __DIR__);
 
 Kirby::plugin('mauricerenck/podcaster', [
-    'options' => [
-        'statsInternal' => false,
-        'statsType' => 'mysql',
-        'statsHost' => null,
-        'statsDatabase' => null,
-        'statsUser' => null,
-        'statsPassword' => null,
-        'matomoToken' => null,
-        'matomoBaseUrl' => null
-    ],
+    'options' => require_once(__DIR__ . '/config/options.php'),
     'templates' => [
         'podcasterfeed' => __DIR__ . '/templates/podcasterfeed.php'
     ],
     'blueprints' => [
         'pages/podcasterfeed' => __DIR__ . '/blueprints/pages/podcasterfeed.yml',
+        'pages/podcasterwizard' => __DIR__ . '/blueprints/pages/podcasterwizard.yml',
         'tabs/podcasterepisode' => __DIR__ . '/blueprints/tabs/episode.yml',
         'files/podcaster-episode' => __DIR__ . '/blueprints/files/podcaster-episode.yml'
     ],
     'sections' => [
-        'podcaster-stats' => [
+        'podcasterEpisodeStats' => [
             'props' => [
                 'headline' => function ($headline = 'Last modified') {
+                    return $headline;
+                }
+            ]
+        ],
+        'podcasterYearlyGraph' => [
+            'props' => [
+                'headline' => function ($headline = 'Last modified') {
+                    return $headline;
+                }
+            ]
+        ],
+        'podcasterTopTen' => [
+            'props' => [
+                'headline' => function ($headline = 'Top 10 Episodes') {
+                    return $headline;
+                }
+            ]
+        ],
+        'podcasterFeedStats' => [
+            'props' => [
+                'headline' => function ($headline = 'Feed Downloads') {
+                    return $headline;
+                }
+            ]
+        ],
+        'podcasterWizard' => [
+            'props' => [
+                'headline' => function ($headline = 'Feed Downloads') {
                     return $headline;
                 }
             ]
@@ -61,56 +86,60 @@ Kirby::plugin('mauricerenck/podcaster', [
             'pattern' => '(:all)/' . option('mauricerenck.podcaster.defaultFeed', 'feed'),
             'action' => function ($slug) {
                 $podcasterUtils = new PodcasterUtils();
-                $page = $podcasterUtils->getPageFromSlug($slug. '/' . option('mauricerenck.podcaster.defaultFeed', 'feed'));
 
-                if(option('mauricerenck.podcaster.statsInternal') === true) {
+                $feed = $podcasterUtils->getPageFromSlug($slug . '/' . option('mauricerenck.podcaster.defaultFeed', 'feed'));
+
+                if (option('mauricerenck.podcaster.statsInternal') === true) {
                     $stats = new PodcasterStats();
                     $trackingDate = time();
-                    $stats->increaseFeedVisits($page, $trackingDate);
+                    $stats->increaseFeedVisits($feed, $trackingDate);
                 }
 
-                if($page->podcasterMatomoFeedEnabled()->isTrue()) {
-                    $matomo = new PiwikTracker($page->podcasterMatomoFeedSiteId(), option('mauricerenck.podcaster.matomoBaseUrl'));
+                if ($feed->podcasterMatomoFeedEnabled()->isTrue()) {
+                    $matomo = new PiwikTracker($feed->podcasterMatomoFeedSiteId(), option('mauricerenck.podcaster.matomoBaseUrl'));
 
                     $matomo->setTokenAuth(option('mauricerenck.podcaster.matomoToken'));
                     $matomo->disableSendImageResponse();
                     $matomo->disableCookieSupport();
-                    $matomo->setUrl($page->url());
+                    $matomo->setUrl($feed->url());
                     $matomo->setIp($_SERVER['REMOTE_ADDR']);
 
-                    if($page->podcasterMatomoFeedGoalId()->isNotEmpty()) {
-                        $matomo->doTrackGoal($page->podcasterMatomoFeedGoalId(), 1);
+                    if ($feed->podcasterMatomoFeedPage()->isNotEmpty() && $feed->podcasterMatomoFeedPage()->isTrue()) {
+                        $matomo->doTrackPageView($feed->podcasterTitle());
                     }
 
-                    if($page->podcasterMatomoFeedEventName()->isNotEmpty()) {
-                        $matomo->doTrackEvent($page->podcasterTitle(), $page->podcasterMatomoFeedEventName(), 1);
+                    if ($feed->podcasterMatomoFeedGoalId()->isNotEmpty()) {
+                        $matomo->doTrackGoal($feed->podcasterMatomoFeedGoalId(), 1);
                     }
 
-                    if($page->podcasterMatomoFeedAction()->isTrue()) {
-                        $matomo->doTrackAction($page->url(), 'download');
+                    if ($feed->podcasterMatomoFeedEventName()->isNotEmpty()) {
+                        $matomo->doTrackEvent($feed->podcasterTitle(), $feed->podcasterMatomoFeedEventName(), 1);
+                    }
+
+                    if ($feed->podcasterMatomoFeedAction()->isTrue()) {
+                        $matomo->doTrackAction($feed->url(), 'download');
                     }
                 }
 
-                return new Response($page->render(), 'text/xml');
+                return new Response($feed->render(), 'text/xml');
             }
         ],
         [
             'pattern' => '(:all)/' . option('mauricerenck.podcaster.downloadTriggerPath', 'download') . '/(:any)',
             'action' => function ($slug, $filename) {
-
                 $podcasterUtils = new PodcasterUtils();
                 $episode = $podcasterUtils->getPageFromSlug($slug);
                 $podcasterUtils->setCurrentEpisode($episode);
 
-                $podcast = $episode->siblings()->find('feed');
+                $podcast = $episode->siblings()->find(option('mauricerenck.podcaster.defaultFeed', 'feed'));
 
-                if(option('mauricerenck.podcaster.statsInternal') === true) {
+                if (option('mauricerenck.podcaster.statsInternal') === true) {
                     $stats = new PodcasterStats();
                     $trackingDate = time();
                     $stats->increaseDownloads($episode, $trackingDate);
                 }
 
-                if($podcast->podcasterMatomoEnabled()->isTrue()) {
+                if ($podcast->podcasterMatomoEnabled()->isTrue()) {
                     $matomo = new PiwikTracker($podcast->podcasterMatomoSiteId(), option('mauricerenck.podcaster.matomoBaseUrl'));
 
                     // setup
@@ -119,16 +148,16 @@ Kirby::plugin('mauricerenck/podcaster', [
                     $matomo->disableCookieSupport();
                     $matomo->setUrl($episode->url());
                     $matomo->setIp($_SERVER['REMOTE_ADDR']);
-        
-                    if($podcast->podcasterMatomoGoalId()->isNotEmpty()) {
+
+                    if ($podcast->podcasterMatomoGoalId()->isNotEmpty()) {
                         $matomo->doTrackGoal($podcast->podcasterMatomoGoalId(), 1);
                     }
-        
-                    if($podcast->podcasterMatomoEventName()->isNotEmpty()) {
+
+                    if ($podcast->podcasterMatomoEventName()->isNotEmpty()) {
                         $matomo->doTrackEvent($podcast->podcasterTitle(), $episode->title(), $podcast->podcasterMatomoEventName());
                     }
-        
-                    if($podcast->podcasterMatomoAction()->isTrue()) {
+
+                    if ($podcast->podcasterMatomoAction()->isTrue()) {
                         $matomo->doTrackAction($episode->url(), 'download');
                     }
                 }
@@ -138,26 +167,6 @@ Kirby::plugin('mauricerenck/podcaster', [
             }
         ]
     ],
-    'hooks' => [
-        'file.create:after' => function ($file) {
-            if($file->extension() == 'mp3') {
-                try {
-                    $audioUtils = new PodcasterAudioUtils();
-                    $audioUtils->setAudioFileMeta($file);
-                } catch(Exception $e) {
-                    throw new Exception(array('details' => 'the audio id3 data could not be read'));
-                }
-            }
-        },
-        'file.replace:after' => function ($file) {
-            if($file->extension() == 'mp3') {
-                try {
-                    $audioUtils = new PodcasterAudioUtils();
-                    $audioUtils->setAudioFileMeta($file);
-                } catch (Exception $e) {
-                    throw new Exception(array('details' => 'the audio id3 data could not be read'));
-                }
-            }
-        }
-    ]
+    'api' => require_once(__DIR__ . '/config/api.php'),
+    'hooks' => require_once(__DIR__ . '/config/hooks.php')
 ]);
