@@ -1,0 +1,12 @@
+{
+  "name": "superman/superplugin",
+  "description": "Superman Demo Plugin",
+  "version": "1.0.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Superman",
+      "email": "superman@example.com"
+    }
+  ]
+}

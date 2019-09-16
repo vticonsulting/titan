@@ -1,0 +1,18 @@
+.wrapper
+    display: flex
+    min-height: 100%
+
+.sidebar
+    position: absolute
+    width: 220px
+
+    li
+        border-bottom: 2px solid #C8D6E5
+
+.page-content
+    flex: 1
+    transform: translate3d(0, 0, 0)
+    transition: transform .3s
+
+.page-content.is-open
+    transform: translate3d(220px, 0, 0)

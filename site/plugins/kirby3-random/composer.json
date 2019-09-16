@@ -1,0 +1,38 @@
+{
+    "name": "bnomei/kirby3-random",
+    "type": "kirby-plugin",
+    "version": "2.3.3",
+    "description": "Kirby Tag and Page Method to generate various random values",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bruno Meilick",
+            "email": "b@bnomei.com"
+        }
+    ],
+    "keywords": [
+        "kirby3",
+        "kirby3-cms",
+        "kirby3-plugin",
+        "random",
+        "lorem-ipsum",
+        "pool",
+        "between",
+        "string",
+        "number"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bnomei\\": "classes/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "require": {
+        "php": ">=7.1.0",
+        "getkirby/composer-installer": "^1.1",
+        "joshtronic/php-loremipsum": "^1.0"
+    }
+}

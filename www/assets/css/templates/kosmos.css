@@ -1,0 +1,17 @@
+/* stylelint-disable block-closing-brace-empty-line-before, at-rule-empty-line-before */
+
+/* stylelint-disable at-rule-empty-line-before */
+
+/* stylelint-disable at-rule-empty-line-before */
+
+html {
+  background: #000 url("../../images/components/kosmos/galaxy.jpg") top center/650px no-repeat;
+}
+
+.kosmos-form {
+  margin-bottom: 3rem;
+}
+
+.footer {
+  background: none !important;
+}

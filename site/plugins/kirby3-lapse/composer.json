@@ -1,0 +1,36 @@
+{
+    "name": "bnomei/kirby3-lapse",
+    "type": "kirby-plugin",
+    "version": "1.1.1",
+    "description": "Cache any data until set expiration time",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bruno Meilick",
+            "email": "b@bnomei.com"
+        }
+    ],
+    "keywords": [
+        "kirby3",
+        "kirby3-cms",
+        "kirby3-plugin",
+        "cache",
+        "expire",
+        "simple",
+        "performance",
+        "key-value"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bnomei\\": "classes/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "require": {
+        "php": ">=7.1.0",
+        "getkirby/composer-installer": "^1.1"
+    }
+}

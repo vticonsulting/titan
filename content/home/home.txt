@@ -1,0 +1,48 @@
+Title: Home
+----
+
+Text:
+
+## Example
+
+```php "/site/snippets/hero.php"
+<figure class="hero">
+  ...
+</figure>
+```
+
+(download: first type: image text: the image)
+
+
+----
+Filesystem:
+
+```filesystem
+resources/
+    css/
+        dashboard.css
+    js/
+        components/
+        router/
+            index.js
+        store/
+            index.js
+            modules/
+                pledges/
+                  index.js
+                  getters.js
+                  mutations.js
+                  actions.js
+        views/
+            Home.vue
+        bootstrap.js
+        dashboard.js
+```
+
+----
+
+Priority: 1.0
+
+----
+
+Changefreq: weekly

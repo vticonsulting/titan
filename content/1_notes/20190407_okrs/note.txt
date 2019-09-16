@@ -1,0 +1,59 @@
+Title: OKRs
+
+----
+
+Text: 
+
+- Improve registration process
+    - Releasing Registration Titan A/B
+    - Increase Conversion (FR/RP) of test group by 1 percentage points (A/B)
+    - Reduce Abandonment of test group by .5% change
+    - Increase Student Star Creation Adoption: 5 percentage points. (A/B) 37% to 42% avg. now
+    - Release Registration Delta
+- Convert more parents into campaigners (Parent Dashboard & Sharing)
+    - Increase # of pledges per participant by 1% (A/B)
+        - no. of Sponsors enrolled in Easy Emailer
+        - Facebook
+        - Text
+        - Link
+        - Increased sharing of student star video
+    - Decrease Single Pledge Participants by 2% (40% to 38%) (A/B)
+    - Increase sharing of Student Star video (A/B)
+    - Improved EE enrollment (A/B)
+    - Release Parent Dashboard Beta
+    - Release Parent Dasboard -- Gamma A/B (stretch)
+- Improve $/student of public pledges -- Sponsor pledge page revamp
+- Reduce hassle of on-boarding a client (rolling to next Q)
+- Set Annual lMMW OKRs
+
+----
+
+Date: 2019-04-07 20:25
+
+----
+
+Author: 
+
+- victor.tolbert@gmail.com
+
+----
+
+Tags: 
+
+----
+
+Src: 
+
+----
+
+Markers: 
+
+----
+
+Related: 
+
+----
+
+Gallery: 
+
+- photography/animals

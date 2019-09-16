@@ -1,0 +1,56 @@
+
+VERSION 1  RELEASE
+==================
+
+   Version 1.1 - Release
+      15/02/2019 20:57  1.1.0  initial release
+         bc4a330 Feat: install by zip or submodule
+
+   Version 1.0 - Release
+      15/01/2019 20:00  1.0.0  initial release
+         f7fe409 Chore: Kirby 3.0
+
+VERSION 0  ALPHA RELEASE
+========================
+
+   Version 0.4 - beta
+      09/01/2019 02:10  0.4.0  initial release
+         c1e7074 Docs: Coffee, Beer, etc
+         109002e Chore: stan
+         84a3ecc Feat: helper blueprint
+         d822e10 Chore: toolchain fix
+         881d547 Chore: Kirby RC2 or better, composer update
+         c7d1f94 Docs: edit stupid mistakes
+         ed812f2 Fixed micro typo
+
+   Version 0.3 - beta release
+      08/11/2018 17:25  0.3.0  initial release
+         b70321f Chore: composer update
+         fc1d282 Fix: update guard to cope with ML site
+         95f5983 Docs: Add use cases. Closes #1.
+         0adc299 Docs: edits for clarity
+
+   Version 0.2 - beta release
+      26/09/2018 18:40  0.2.1  beta release
+         e3587c5 Chore: refactor composer
+         344c07b Docs: detail debug headers
+         b52f138 Fix: guard
+      23/09/2018 14:44  0.2.0  initial release
+         ec1a32a Chore: update lock
+         e3656f8 Feature: embargoCheckWhenTemplateIs, embargoCheckWhenParentIs
+         e4d5c81 Fix: add guard
+         173f5a2 Chore: stan goes strict and tweak release process
+         1d31cc7 Chore: squash stan false positives
+         1708040 Fix: show raw to in header
+         a292e61 Chore: guard
+         f32678c Chore: style
+         930fa24 Fix: no need for 418 (see header), so always 404
+         921b975 Chore: ignore $this related errors until phpstan understands magic
+         6f94c08 Chore: because I can’t type composer, use make
+         a360187 Refactor: phpstan happiness and style update
+         889a0af Chore: automagically normalize composer.json
+         b4c7656 Chore: update cs
+         78440ea Chore: update and apply coding ruleset
+
+   Version 0.1 - alpha release
+      31/08/2018 17:21  0.1.0  initial release

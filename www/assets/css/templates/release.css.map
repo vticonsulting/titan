@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./resources/sass/templates/release.scss"],"names":[],"mappings":"AAGA,eACE,cACA,eAAgB","file":"css/templates/release.css","sourcesContent":["$ENV: production;\n@import \"../includes\";\n\n.v3-page .text {\n  margin: 0 auto;\n  max-width: 35rem;\n}\n\n\n\n// WEBPACK FOOTER //\n// ./resources/sass/templates/release.scss"],"sourceRoot":""}

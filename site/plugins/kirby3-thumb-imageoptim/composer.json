@@ -1,0 +1,36 @@
+{
+    "name": "bnomei/kirby3-thumb-imageoptim",
+    "description": "Kirby 3 Thumb Driver using Imageoptim",
+    "type": "kirby-plugin",
+    "version": "1.3.1",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bruno Meilick",
+            "email": "b@bnomei.com"
+        }
+    ],
+    "keywords": [
+        "kirby3",
+        "kirby3-cms",
+        "kirby3-plugin",
+        "image-optimization",
+        "thumbnail",
+        "thumb",
+        "component"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bnomei\\": "classes/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "require": {
+        "php": ">=7.1.0",
+        "getkirby/composer-installer": "^1.1",
+        "imageoptim/imageoptim": "^1.3"
+    }
+}

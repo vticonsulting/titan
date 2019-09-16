@@ -1,0 +1,5 @@
+Title: Glossary
+
+----
+
+Description: Definitions of technical terms used within and around Booster.

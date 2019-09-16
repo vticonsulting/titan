@@ -1,0 +1,14 @@
+console.log('resources/js/templates/example.js')
+
+Vue.component('click-counter', {
+  template: '#click-counter-template',
+  data() {
+    return {
+      count: 0
+    }
+  }
+})
+
+new Vue({
+  el: '#app'
+})

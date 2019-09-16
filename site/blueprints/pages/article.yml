@@ -1,0 +1,40 @@
+title: Article
+
+tabs:
+
+  # main content
+  content:
+    label: Content
+    sections:
+      content:
+        type: fields
+        fields:
+          headline:
+            label: Headline
+            type: text
+          intro:
+            label: Intro
+            type: textarea
+            size: small
+          text:
+            label: Text
+            type: textarea
+            size: large
+
+  # meta information
+  meta:
+    label: Additional information
+    sections:
+      meta:
+        type: fields
+        fields:
+          date:
+            label: Date
+            type: date
+          author:
+            label: Author
+            type: users
+            multiple: false
+          tags:
+            label: Tags
+            type: tags

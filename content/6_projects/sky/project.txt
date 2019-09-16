@@ -1,0 +1,29 @@
+Title: Sky
+
+----
+
+Heading: 
+
+----
+
+Featured: true
+
+----
+
+Text: 
+
+----
+
+Cover: - dark-forest.jpg
+
+----
+
+Headline: Stars and the universe and so on
+
+----
+
+Description: 
+
+----
+
+Tags: stars, universe, up there

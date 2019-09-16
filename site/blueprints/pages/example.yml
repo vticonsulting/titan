@@ -1,0 +1,100 @@
+title: Events
+
+fields:
+  pageSettings:
+    label: Page Settings
+    type: headline
+  title:
+    label: Title
+    type: title
+  event_date:
+    label: Next Event Date
+    type: date
+  draft:
+    label: Draft
+    type: toggle
+  content:
+    label: Content
+    type: headline
+  text:
+    label: Text
+    type: textarea
+  info:
+    label: Info
+    type: info
+    text: |
+      Dear editor,
+
+      each project should have a **cover.jpg**, which will be displayed in the project overview. You should also make sure to fill in all fields correctly.
+
+      In love,
+      Your admin
+  time:
+    label: Time
+    type: time
+    notation: 12
+  toggle:
+    label: Toggle
+    type: toggle
+    text: Include in menu?
+  main_category:
+    label: Main Category
+    type: radio
+    options:
+      design: Design
+      architecture: Architecture
+      photography: Photography
+      3d: 3D
+      web: Web
+  url:
+    label: URL
+    type: url
+  budget:
+    label: Budget
+    type: range
+    step: 100
+    min: 0
+    max: 10000
+    tooltip:
+      before: $
+  authors:
+    label: Authors
+    type: users
+  tags:
+    label: Categories
+    type: multiselect
+    min: 2
+    max: 4
+    options:
+      design: Design
+      architecture: Architecture
+      photography: Photography
+      3d: 3D
+      web: Web
+  phone:
+      label: Phone
+      type: tel
+  categories:
+    label: Categories
+    type: checkboxes
+    options:
+      design: Design
+      architecture: Architecture
+      photography: Photography
+      3d: 3D
+      web: Web
+  downloads:
+    label: Downloads
+    type: files
+  email:
+    label: Email
+    type: email
+  month:
+    label: Event Month
+    type: text
+  day:
+    label: Event Day
+    type: text
+  year:
+    label: Event Year
+    type: text

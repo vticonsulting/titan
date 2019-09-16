@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "description": "Sed earum qui voluptate.",
+    "hash": "Uv-IZDxdZbM",
+    "url": null,
+    "original_url": "https:\/\/www.youtube.com\/watch?v=Uv-IZDxdZbM",
+    "source": "youtube",
+    "timestamp": "2015-12-30 09:30:08",
+    "embed_uri": "Uv-IZDxdZbM",
+    "isActive": false,
+    "thumbnail": "https:\/\/img.youtube.com\/vi\/Uv-IZDxdZbM\/0.jpg",
+    "external_video_id": "Uv-IZDxdZbM"
+  },
+  {
+    "id": 2,
+    "description": "Explicabo sint dolor est adipisci ut repellat illo.",
+    "hash": "9yzeWoelJ3M",
+    "url": null,
+    "original_url": "http:\/\/www.youtube.com\/watch?v=9yzeWoelJ3M",
+    "source": "youtube",
+    "timestamp": "2015-12-30 09:30:08",
+    "embed_uri": "9yzeWoelJ3M",
+    "isActive": false,
+    "thumbnail": "https:\/\/img.youtube.com\/vi\/9yzeWoelJ3M\/0.jpg",
+    "external_video_id": "9yzeWoelJ3M"
+  },
+  {
+    "id": 3,
+    "description": "In earum porro consequuntur dolores occaecati dolor aut.",
+    "hash": "9yzeWoelJ3M",
+    "url": null,
+    "original_url": "http:\/\/www.youtube.com\/watch?v=9yzeWoelJ3M",
+    "source": "youtube",
+    "timestamp": "2015-12-30 09:30:08",
+    "embed_uri": "9yzeWoelJ3M",
+    "isActive": false,
+    "thumbnail": "https:\/\/img.youtube.com\/vi\/9yzeWoelJ3M\/0.jpg",
+    "external_video_id": "9yzeWoelJ3M"
+  },
+  {
+    "id": 4,
+    "description": "Aut aut consequatur et labore.",
+    "hash": "Uv-IZDxdZbM",
+    "url": null,
+    "original_url": "https:\/\/www.youtube.com\/watch?v=Uv-IZDxdZbM",
+    "source": "youtube",
+    "timestamp": "2015-12-30 09:30:08",
+    "embed_uri": "Uv-IZDxdZbM",
+    "isActive": false,
+    "thumbnail": "https:\/\/img.youtube.com\/vi\/Uv-IZDxdZbM\/0.jpg",
+    "external_video_id": "Uv-IZDxdZbM"
+  },
+  {
+    "id": 5,
+    "description": "Facere et veniam tempora dignissimos.",
+    "hash": "9yzeWoelJ3M",
+    "url": null,
+    "original_url": "http:\/\/www.youtube.com\/watch?v=9yzeWoelJ3M",
+    "source": "youtube",
+    "timestamp": "2015-12-30 09:30:08",
+    "embed_uri": "9yzeWoelJ3M",
+    "isActive": false,
+    "thumbnail": "https:\/\/img.youtube.com\/vi\/9yzeWoelJ3M\/0.jpg",
+    "external_video_id": "9yzeWoelJ3M"
+  }
+]

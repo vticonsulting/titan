@@ -1,0 +1,9 @@
+Title: KDM
+
+----
+Entry:
+
+Key Decision Maker
+
+----
+Link: docs/guide/content/text-formatting#markdown

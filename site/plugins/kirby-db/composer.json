@@ -1,0 +1,38 @@
+{
+    "name": "beebmx/kirby-db",
+    "description": "Enable Kirby 3 database support for Illuminate\\Database",
+    "keywords": [
+        "kirby", "kirby-3", "database", "model", "eloquent"
+    ],
+    "version": "1.0.3",
+    "type": "kirby-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fernando Gutierrez",
+            "email": "fernando@beeb.mx"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "getkirby/composer-installer": "^1.1"
+    },
+    "require-dev": {
+        "illuminate/database": "^5.7"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "vendor-dir": "bundle/"
+    },
+    "autoload": {
+        "files": [
+            "config.php"
+        ],
+        "psr-4": {
+            "Beebmx\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}

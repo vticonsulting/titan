@@ -1,0 +1,1 @@
+console.log('resources/titan/js/titan.js')

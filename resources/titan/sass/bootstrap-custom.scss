@@ -1,0 +1,116 @@
+
+/**
+ * this is to create a thinner progress bar
+ */
+.progress.progress-skinny {
+    background: rgba(245, 245, 245, 1);
+    border: 0px solid rgba(245, 245, 245, 1);
+    border-radius: 5px; height: 10px;
+}
+.progress-bar-custom-green {
+    background: rgb(70, 201, 49);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/**
+ * this is to create rounded side buttons
+ */
+.btn-round {
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+}
+
+.btn-circle {
+    border-radius: 50%;
+}
+
+.btn-navy {
+    color: white !important;
+    background-color: #212e3d;
+    border-color: #212e3d;
+}
+
+.text-invalid {
+    color: $brand-danger;
+}
+
+
+/**
+ * remove blue glow focus border of buttons
+ */
+.btn {
+    &:focus {
+        &:active {
+            outline: none
+        }
+        outline: none
+    }
+}
+
+/**
+ * create a centered tabs
+ */
+.nav-tabs {
+    &.nav-center {
+        text-align: center;
+        &> li {
+            float: none;
+            display: inline-block;
+            zoom: 1;
+            border: none;
+            background: transparent !important;
+            color: $text-color;
+            &:active > a {
+                background: transparent !important;
+                color: $text-color;
+                border: none !important;
+                &.active {
+                    color: $brand-primary;
+                }
+            }
+            &:hover > a {
+                background: transparent !important;
+                color: $text-color;
+                border: none !important;
+                &.active {
+                    color: $brand-primary;
+                }
+            }
+            &> a {
+                background: transparent !important;
+                color: $text-color;
+                border: none !important;
+                &.active {
+                    color: $brand-primary;
+                }
+            }
+            &.active {
+                border: none;
+                border-bottom: 2px solid $brand-primary;
+                color: $brand-primary;
+                background: transparent;
+            }
+        }
+    }
+}
+
+body.modal-open .auth{
+    -webkit-filter: blur(7px);
+    -moz-filter: blur(7px);
+    -o-filter: blur(7px);
+    -ms-filter: blur(7px);
+    filter: blur(7px);
+}
+
+/**
+ * smooth scrolling on iOS in modals
+ */
+.modal {
+    -webkit-overflow-scrolling: touch;
+}

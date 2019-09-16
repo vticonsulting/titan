@@ -1,0 +1,66 @@
+.subtitler {
+    position: relative;
+    width: 100%;
+    padding-bottom: 0;
+    margin-bottom: 3rem;
+    user-select: none;
+
+	/* Reset form elements */
+	button {
+		outline: none;
+	}
+
+    &-background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+    &-placeholder {
+        position: relative;
+        padding: 2.5rem;
+        &-ctn {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            padding: 2.5rem;
+        }
+    }
+    &-file {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        padding: 1.5rem;
+        padding-bottom: 2.5rem;
+        &.debug {
+            padding-top: 2.5rem;
+        }
+        .subtitler-video {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &-ctn {
+                position: relative;
+                display: inline-block;
+                max-width: 100%;
+                z-index: 2;
+                video {
+                    display: block;
+                    max-width: 100%;
+                    max-height: calc(75vh - 2.5rem - 9.5rem);
+                }
+            }
+        }
+        .subtitler-audio {
+            .audio-icon {
+                display: block;
+                width: 75px;
+                margin: 0 auto;
+                margin-top: 1rem;
+            }
+        }
+    }
+}

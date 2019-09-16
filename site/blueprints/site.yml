@@ -1,0 +1,20 @@
+# title: Site
+# preset: pages
+# unlisted: true
+title: Site
+
+columns:
+  - width: 1/2
+    sections:
+      albums: sections/albums
+  - width: 1/2
+    sections:
+      notes: sections/notes
+      projects: sections/projects
+      pages:
+        type: pages
+        create: default
+        template:
+          - about
+          - home
+          - default

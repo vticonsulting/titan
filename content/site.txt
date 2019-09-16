@@ -1,0 +1,40 @@
+Title: Titan UI
+----
+
+Description: Kirby is the content management system that adapts to your projects like no other.
+
+----
+
+Twittersite: @getkirby
+
+----
+
+Twittercreator: @getkirby
+
+----
+
+Twittercard: summary_large_image
+
+----
+
+Thumbnail: opengraph.jpg
+
+----
+
+Month: 4
+
+----
+
+Day: 24
+
+----
+
+Year: 2019
+
+----
+
+Hour: 9
+
+----
+
+Minute: 30

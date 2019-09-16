@@ -1,0 +1,36 @@
+title: Subtitler
+preset: page
+
+columns:
+  - width: 2/3
+    sections:
+      subtitler:
+        type: subtitler
+        timelines:
+          mytimeline:
+            id: mytimeline
+            label: My timeline
+            color: purple
+        storage:
+          src: src
+          subs: subs
+
+  - width: 1/3
+    sections:
+      myfields:
+        type: fields
+        fields:
+          src:
+            type: files
+            max: 1
+          subs:
+            type: structure
+            sortable: false
+            fields:
+              note:
+                label: Note
+                type: text
+fields:
+  text:
+    type: textarea
+    size: huge
